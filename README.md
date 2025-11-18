@@ -26,9 +26,62 @@ To implement MESSAGE AUTHENTICATION CODE(MAC)
 
 ## Program:
 
+```
+#include <stdio.h>
+#include <string.h>
+
+#define MAC_SIZE 32
+
+void computeMAC(const char *key, const char *message, char *mac) {
+    int key_len = strlen(key);
+    int msg_len = strlen(message);
+
+    for (int i = 0; i < MAC_SIZE; i++) {
+        mac[i] = key[i % key_len] ^ message[i % msg_len];
+    }
+
+    mac[MAC_SIZE] = '\0';
+}
+
+int main() {
+    char key[100], message[100];
+    char mac[MAC_SIZE + 1];
+    char receivedMAC[MAC_SIZE + 1];
+
+    printf("Enter the secret key: ");
+    scanf("%s", key);
+
+    printf("Enter the message: ");
+    scanf("%s", message);
+
+    computeMAC(key, message, mac);
+
+    printf("Computed MAC (in hex): ");
+    for (int i = 0; i < MAC_SIZE; i++) {
+        printf("%02x", (unsigned char)mac[i]);
+    }
+    printf("\n");
+
+    printf("Enter the received MAC (as hex): ");
+    for (int i = 0; i < MAC_SIZE; i++) {
+        scanf("%02hhx", &receivedMAC[i]);
+    }
+
+    if (memcmp(mac, receivedMAC, MAC_SIZE) == 0) {
+        printf("MAC verification successful. Message is authentic.\n");
+    } else {
+        printf("MAC verification failed. Message is not authentic.\n");
+    }
+
+    return 0;
+}
+```
+
 
 
 ## Output:
+
+<img width="822" height="346" alt="image" src="https://github.com/user-attachments/assets/4f5bf0e0-4f41-4f3e-9e7e-79817b97c29a" />
 
 
 ## Result:
